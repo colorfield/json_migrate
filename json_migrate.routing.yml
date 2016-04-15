@@ -7,11 +7,19 @@ json_migrate.select_content_type_form:
   requirements:
     _permission: 'administer content'
 
-json_migrate.content_type_controller_migrate:
+json_migrate.content_type_migrate:
   path: 'admin/migrate/json/content-type/{name}/{translation_mode}'
   defaults:
     _controller: '\Drupal\json_migrate\Controller\ContentTypeController::migrate'
     _title: 'Content type migration'
+  requirements:
+    _permission: 'administer content'
+
+json_migrate.source_debug:
+  path: 'admin/migrate/json/debug/source/{file_name}/{length}'
+  defaults:
+    _controller: '\Drupal\json_migrate\Controller\SourceDebugController::printDebug'
+    _title: 'Source debug'
   requirements:
     _permission: 'administer content'
 

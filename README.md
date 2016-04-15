@@ -27,5 +27,5 @@ cp drupal_7_export_path/article.txt drupal_8_path/sites/default/files/migrate/ar
 
 On json_migrate/src/Model, you can define your custom migration.
 
-1. Create the migration classes that inherits from ContentTypeMigration and implements the MigrationInterface.
+1. Create the migration classes that inherits from ContentTypeMigration and implements the prepareCustomNodeProperties() and setCustomNodeTranslationProperties().
 2. Define the mapping between the content types machine name and the migration classes in ContentTypeMigrationFactory. The keys are used for the JSON file names.

@@ -10,8 +10,8 @@ namespace Drupal\json_migrate\Form;
 
 use Drupal\Core\Form\FormBase;
 use Drupal\Core\Form\FormStateInterface;
-use Drupal\json_migrate\Model\ContentTypeMigration;
-use Drupal\json_migrate\Model\ContentTypeMigrationFactory;
+use Drupal\json_migrate\Model\ContentType\ContentTypeMigration;
+use Drupal\json_migrate\Model\ContentType\ContentTypeMigrationFactory;
 
 /**
  * Class SelectContentTypeForm.
@@ -86,7 +86,7 @@ class SelectContentTypeForm extends FormBase {
     $sourceTranslationMode =  $completeForm['source_translation_mode']['#value'];
     $sourceContentTypeMachineName =  $completeForm['source_content_type']['#value'];
     $form_state->setRedirect(
-      'json_migrate.content_type_controller_migrate',
+      'json_migrate.content_type_migrate',
       array(
         'name' => $sourceContentTypeMachineName,
         'translation_mode' => $sourceTranslationMode,

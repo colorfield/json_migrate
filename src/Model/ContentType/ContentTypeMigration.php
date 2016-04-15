@@ -1,17 +1,8 @@
 <?php
-/**
- * Created by PhpStorm.
- * User: spock
- * Date: 13/04/16
- * Time: 9:53
- */
+namespace Drupal\json_migrate\Model\ContentType;
 
-namespace Drupal\json_migrate\Model;
-
-use Drupal\Core\Controller\ControllerBase;
 use Drupal\Core\Logger\LoggerChannelFactoryInterface;
 use Drupal\json_migrate\Controller\BatchProcessController;
-use Symfony\Component\DependencyInjection\ContainerInterface;
 use \Drupal\node\Entity\Node;
 
 /**
@@ -69,13 +60,12 @@ abstract class ContentTypeMigration /*extends ControllerBase*/{
    */
   protected $entriesToMigrate = array();
 
-  /*
-  public function __construct(LoggerChannelFactoryInterface $loggerFactory)
+  public function __construct()
   {
-    $this->loggerFactory = $loggerFactory;
     $this->concreteClass = get_class($this);
+    // @todo use DI if ControllerBase available
+    //$this->loggerFactory = \Drupal::service('logger.factory');
   }
-  */
 
   /**
    * @inheritdoc
@@ -97,7 +87,7 @@ abstract class ContentTypeMigration /*extends ControllerBase*/{
     $this->sourceContentTypeMachineName = $sourceContentTypeMachineName;
     $this->sourceTranslationMode = $sourceTranslationMode;
     //dsm('Prepare migration for ' . $this->concreteClass);
-    if($this->getJSON()) {
+    if($this->getJSON($sourceContentTypeMachineName)) {
       // @todo review this switch with the migrate method
       switch($this->sourceTranslationMode) {
         case ContentTypeMigration::TRANSLATION_MODE_UND:
@@ -119,33 +109,26 @@ abstract class ContentTypeMigration /*extends ControllerBase*/{
    * Reads and decodes JSON.
    * @return bool
    */
-  private function getJSON()
+  private function getJSON($fileName)
   {
     $result = false;
-    //dsm('Read JSON for ' . $this->sourceContentTypeMachineName);
-    $realPath = \Drupal::service('file_system')
+    // @todo DI instead of Drupal::service if ControllerBase available
+    $path = \Drupal::service('file_system')
                 ->realpath(ContentTypeMigration::JSON_PATH);
-    $fileName = $realPath . '/' . $this->sourceContentTypeMachineName . '.txt';
-    //dsm($fileName);
-    // @todo review Drupal api for that or get inspired from
-    // https://www.drupal.org/project/migrate_source_json
-    // https://api.drupal.org/api/drupal/vendor%21zendframework%21zend-feed%21src%21Reader%21Reader.php/class/Reader/8
-    if(file_exists($fileName)) {
-      $handle = fopen($fileName, "r");
-      $contents = fread($handle, filesize($fileName));
-      fclose($handle);
-      // @todo check json validity
-      $this->decodedJSON = json_decode($contents);
+    $json = \Drupal::service('json_migrate.reader')
+                ->read($path, $fileName.'.txt');
+
+    if(empty($json['errors'])){
+      $this->decodedJSON = $json['json'];
       $result = true;
     }else{
       drupal_set_message(
-        t('File @name not found',
-          array('@name' => $this->sourceContentTypeMachineName.'.txt',)
+        t('File @name not found or readable.',
+          array('@name' => $fileName.'.txt',)
         ),
         'error'
       );
     }
-
     return $result;
   }
 
@@ -171,7 +154,7 @@ abstract class ContentTypeMigration /*extends ControllerBase*/{
   /**
    * Filter entries that are the source for translation.
    * nid = tnid
-   * @todo use generator
+   * @todo use generator to reduce the ram consumption
    */
   protected function prepareEntriesFromi18n()
   {
@@ -180,7 +163,6 @@ abstract class ContentTypeMigration /*extends ControllerBase*/{
       if($entry->nid == $entry->tnid)
       $this->entriesToMigrate[$entry->nid] = $entry;
     }
-    //kint($this->entriesToMigrate);
   }
 
   /**
@@ -245,8 +227,6 @@ abstract class ContentTypeMigration /*extends ControllerBase*/{
    */
   private function saveNodeFromEntry($entry, $isTranslation = false, Node $sourceNode = null)
   {
-    //kint($entry);
-
     $node = null;
 
     if(!$isTranslation) {
@@ -255,6 +235,13 @@ abstract class ContentTypeMigration /*extends ControllerBase*/{
       $node_custom_properties = $this->prepareCustomNodeProperties($entry);
       $node_properties = array_merge($node_common_properties, $node_custom_properties);
       $node = Node::create($node_properties);
+      /*
+      $this->loggerFactory->get('json_migrate')->info(
+        t('Created node @title in @lang',
+          array('@title' => $node['title'], '@lang' => $node['lang'])
+        )
+      );
+      */
     }else {
       if(isset($sourceNode)) {
         //dsm('Translation');
@@ -264,13 +251,20 @@ abstract class ContentTypeMigration /*extends ControllerBase*/{
         // because some fields are untranslated
         $this->setCommonNodeTranslationProperties($node, $entry);
         $this->setCustomNodeTranslationProperties($node, $entry);
+        /*
+        $this->loggerFactory->get('json_migrate')->info(
+          t('Translated node @title in @lang',
+            array('@title' => $node->getTitle(), '@lang' => $node->language())
+          )
+        );
+        */
       }else {
         drupal_set_message(t('No source node defined for the translation.'));
       }
     }
 
-    //$this->loggerFactory>get(‘json_migrate’)->info($node);
-    //$this->loggerFactory>get(‘json_migrate’)->warning($node);
+    // @todo log errors
+    //$this->loggerFactory>get('json_migrate')->warning($node);
 
     // @todo uncomment when done with tests
     $node->save();
@@ -285,11 +279,10 @@ abstract class ContentTypeMigration /*extends ControllerBase*/{
   private function i18nMigrate($entry)
   {
     $result = array();
-    // @todo get and return results
+    // @todo get and return results / errors
     $node = $this->saveNodeFromEntry($entry);
     $translation_entries = $this->geti18nNodeTranslationsEntries($entry->tnid);
     foreach ($translation_entries as $translation_entry) {
-      //kint($translation_entry);
       $translated_node = $this->saveNodeFromEntry($translation_entry, true, $node);
     }
     return $result;
@@ -347,6 +340,7 @@ abstract class ContentTypeMigration /*extends ControllerBase*/{
    */
   private function batchMigrate()
   {
+    // @todo compare amount of source entries and created nodes
     return BatchProcessController::setBatch($this->entriesToMigrate, $this);
   }
 

@@ -1,11 +1,11 @@
 <?php
-namespace Drupal\json_migrate\Model;
+namespace Drupal\json_migrate\Model\ContentType;
 
 use Drupal\node\Entity\Node;
 use \Drupal\file\Entity\File;
 
 class PageMigration extends ContentTypeMigration
-                    implements MigrationInterface
+                    implements ContentTypeMigrationInterface
 {
 
   /**

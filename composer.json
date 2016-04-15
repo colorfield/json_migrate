@@ -4,11 +4,11 @@
   "description": "Custom migration from a JSON data source.",
   "keywords": ["Drupal"],
   "license": "GPL-2.0+",
-  "homepage": "https://www.drupal.org/project/json_migrate",
+  "homepage": "https://www.drupal.org/sandbox/colorfield/2705299",
   "minimum-stability": "dev",
   "support": {
-    "issues": "http://drupal.org/project/issues/json_migrate",
-    "source": "http://cgit.drupalcode.org/json_migrate"
+    "issues": "https://www.drupal.org/project/issues/2705299",
+    "source": "https://www.drupal.org/project/2705299/git-instructions"
   },
   "require": { }
 }

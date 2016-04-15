@@ -1,0 +1,5 @@
+services:
+  json_migrate.reader:
+    class: Drupal\json_migrate\JSONReader
+    arguments: []
+

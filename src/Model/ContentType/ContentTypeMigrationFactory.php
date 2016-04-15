@@ -1,12 +1,5 @@
 <?php
-/**
- * Created by PhpStorm.
- * User: spock
- * Date: 13/04/16
- * Time: 9:59
- */
-
-namespace Drupal\json_migrate\Model;
+namespace Drupal\json_migrate\Model\ContentType;
 
 
 class ContentTypeMigrationFactory {

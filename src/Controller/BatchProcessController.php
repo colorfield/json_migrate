@@ -3,7 +3,7 @@ namespace Drupal\json_migrate\Controller;
 
 use Drupal\Core\Controller\ControllerBase;
 use Drupal\Core\Url;
-use Drupal\json_migrate\Model\ContentTypeMigration;
+use Drupal\json_migrate\Model\ContentType\ContentTypeMigration;
 
 class BatchProcessController extends ControllerBase
 {
@@ -19,11 +19,16 @@ class BatchProcessController extends ControllerBase
    *  Count of the contents.
    * @param int $operation
    *  Current operation to run the batch on.
-   * @param string $content
+   * @param string $entry
    *   The content to import.
+   * @param $migrationHelper
+   *   The helper that contains the callback method.
    * @param array $context
    *   The batch context.
    */
+
+  // @todo refactoring needed to allow other migration thatn content type
+  // use a more generic interface for vocabularies and users
   public static function processBatch($amount,
                                       $operation,
                                       $entry,
