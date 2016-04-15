@@ -1,0 +1,32 @@
+# https://www.drupal.org/node/2117411
+json_migrate.select_content_type_form:
+  path: 'admin/migrate/json/content-types'
+  defaults:
+    _form: '\Drupal\json_migrate\Form\SelectContentTypeForm'
+    _title: 'Select content type to migrate'
+  requirements:
+    _permission: 'administer content'
+
+json_migrate.content_type_controller_migrate:
+  path: 'admin/migrate/json/content-type/{name}/{translation_mode}'
+  defaults:
+    _controller: '\Drupal\json_migrate\Controller\ContentTypeController::migrate'
+    _title: 'Content type migration'
+  requirements:
+    _permission: 'administer content'
+
+json_migrate.batch_process:
+  path: '/admin/migrate/json/batch/process'
+  defaults:
+    _controller: '\Drupal\json_migrate\Controller\BatchProcessController::initBatch'
+    _title: 'Batch init'
+  requirements:
+    _permission: 'administer content'
+
+json_migrate.batch_finish:
+  path: '/admin/migrate/json/batch/finish'
+  defaults:
+    _controller: '\Drupal\json_migrate\Controller\BatchFinishController::getResults'
+    _title: 'Batch results'
+  requirements:
+    _permission: 'administer content'

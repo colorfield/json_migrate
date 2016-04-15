@@ -1,0 +1,14 @@
+{
+  "name": "drupal/json_migrate",
+  "type": "drupal-module",
+  "description": "Custom migration from a JSON data source.",
+  "keywords": ["Drupal"],
+  "license": "GPL-2.0+",
+  "homepage": "https://www.drupal.org/project/json_migrate",
+  "minimum-stability": "dev",
+  "support": {
+    "issues": "http://drupal.org/project/issues/json_migrate",
+    "source": "http://cgit.drupalcode.org/json_migrate"
+  },
+  "require": { }
+}

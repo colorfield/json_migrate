@@ -1,0 +1,24 @@
+<?php
+
+/**
+ * @file
+ * Contains json_migrate.module..
+ */
+
+use Drupal\Core\Routing\RouteMatchInterface;
+
+/**
+ * Implements hook_help().
+ */
+function json_migrate_help($route_name, RouteMatchInterface $route_match) {
+  switch ($route_name) {
+    // Main module help for the json_migrate module.
+    case 'help.page.json_migrate':
+      $output = '';
+      $output .= '<h3>' . t('About') . '</h3>';
+      $output .= '<p>' . t('Custom migration from a JSON data source.') . '</p>';
+      return $output;
+
+    default:
+  }
+}
