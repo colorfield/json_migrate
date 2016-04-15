@@ -3,6 +3,7 @@ namespace Drupal\json_migrate\Controller;
 
 use Drupal\Core\Controller\ControllerBase;
 use Drupal\Core\Url;
+use Drupal\json_migrate\Model\ContentTypeMigration;
 
 class BatchProcessController extends ControllerBase
 {
@@ -23,14 +24,21 @@ class BatchProcessController extends ControllerBase
    * @param array $context
    *   The batch context.
    */
-  public static function processBatch($amount, $operation, $content, &$context)
+  public static function processBatch($amount,
+                                      $operation,
+                                      $entry,
+                                      ContentTypeMigration $migrationHelper,
+                                      &$context)
   {
-    //@todo process here the heavy work on the content
+
+    if(isset($migrationHelper)) {
+      $migrationHelper->batchCallback($entry);
+    }
 
     // cannot use dependency injection an need static call from a static context
     \Drupal::logger('json_migrate')->info(
       \Drupal::translation()
-        ->translate('Imported content %content', array('%content' => $content))
+        ->translate('Imported content %content', array('%content' => $entry))
     );
     //    review e.g. \Drupal\migrate_drupal_ui\MigrateUpgradeRunBatch
     //    if (!isset($context['sandbox']['current'])) {
@@ -63,7 +71,8 @@ class BatchProcessController extends ControllerBase
   }
 
 
-  public static function setBatch($itemsToProcess)
+  public static function setBatch($itemsToProcess,
+                                  ContentTypeMigration $migrationHelper = null)
   {
     try {
       $batch = [
@@ -76,10 +85,10 @@ class BatchProcessController extends ControllerBase
       ];
       $amount = count($itemsToProcess);
       $operation = BatchProcessController::OPERATION_CREATE;
-      foreach ($itemsToProcess as $item) {
+      foreach ($itemsToProcess as $entry) {
         $batch['operations'][] = [
           [BatchProcessController::class, 'processBatch'],
-          [$amount, $operation, $item]
+          [$amount, $operation, $entry, $migrationHelper]
         ];
       }
       batch_set($batch);
@@ -92,6 +101,10 @@ class BatchProcessController extends ControllerBase
     return batch_process($url);
   }
 
+  /**
+   * Used for batch tests, should not directly be called.
+   * @todo refactoring needed
+   */
   public function initBatch()
   {
     // a list of contents to process

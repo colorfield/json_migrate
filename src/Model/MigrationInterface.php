@@ -1,8 +1,16 @@
 <?php
 namespace Drupal\json_migrate\Model;
 
-interface MigrationInterface 
+use Drupal\node\Entity\Node;
+
+interface MigrationInterface
 {
-  public function prepareMigration($sourceContentTypeMachineName,
+  function prepareMigration($sourceContentTypeMachineName,
                                    $sourceTranslationMode);
+
+  /*
+  function prepareCustomNodeProperties($entry);
+
+  function setCustomNodeTranslationProperties(Node &$node, $entry);
+  */
 }

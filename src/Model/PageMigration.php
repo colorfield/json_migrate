@@ -5,7 +5,8 @@ use Drupal\node\Entity\Node;
 use \Drupal\file\Entity\File;
 
 class PageMigration extends ContentTypeMigration
-                    implements MigrationInterface{
+                    implements MigrationInterface
+{
 
   /**
    * @inheritdoc
@@ -15,7 +16,7 @@ class PageMigration extends ContentTypeMigration
     $properties = array(
       'type' => 'page',
     );
-    // @todo add custom properties / fields
+    // @todo add custom properties
     return $properties;
   }
 

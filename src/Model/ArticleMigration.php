@@ -2,10 +2,12 @@
 namespace Drupal\json_migrate\Model;
 
 use Drupal\node\Entity\Node;
+use \Drupal\file\Entity\File;
 
 class ArticleMigration extends ContentTypeMigration
-                        implements MigrationInterface
+                    implements MigrationInterface
 {
+
   /**
    * @inheritdoc
    */
@@ -14,7 +16,7 @@ class ArticleMigration extends ContentTypeMigration
     $properties = array(
       'type' => 'article',
     );
-    // @todo add custom properties / fields
+    // @todo add custom properties
     return $properties;
   }
 

@@ -1,8 +1,10 @@
 <?php
+
 /**
  * @file
  * Contains \Drupal\json_migrate\Controller\ContentTypeController.
  */
+
 namespace Drupal\json_migrate\Controller;
 
 use Drupal\Core\Controller\ControllerBase;
@@ -61,20 +63,20 @@ class ContentTypeController extends ControllerBase {
   public function migrate($name, $translation_mode)
   {
     $migration = new ContentTypeMigrationFactory();
+    $response = array(
+      '#type' => 'markup',
+      '#markup' => $this->t('Migration for the content type @name', array('@name' => $name)),
+    );
     try {
       $contentTypeMigration = $migration->createMigration($name);
       if($contentTypeMigration instanceof MigrationInterface) {
         // should return a list of contents to migrate to be passed to the batch
-        $contentTypeMigration->prepareMigration($name, $translation_mode);
+        $response = $contentTypeMigration->prepareMigration($name, $translation_mode);
       }
     }catch(\InvalidArgumentException $e) {
       drupal_set_message($e->getMessage(), 'error');
     }
-
-    return array(
-        '#type' => 'markup',
-        '#markup' => $this->t('Migration for the content type @name', array('@name' => $name)),
-    );
+    return $response;
   }
 
 }
