@@ -1,0 +1,153 @@
+<?php
+
+/**
+ * @file
+ * Install, update and uninstall functions for the json_migrate module.
+ */
+
+/**
+ * Implements hook_uninstall().
+ */
+function json_migrate_uninstall()
+{
+  // Clear json_migrate data out of the cache.
+  \Drupal::cache('data')->deleteAll();
+}
+
+/**
+ * Implements hook_schema().
+ * Stores migration information that is used for logging, crash recovery,
+ * update and dependencies management (entity, term and user references).
+ */
+function json_migrate_schema()
+{
+  $schema['json_migrate_node'] = array(
+    'description' => 'Stores migration information about nodes.',
+    'fields' => array(
+      'migrate_id' => array(
+        'type' => 'serial',
+        'unsigned' => TRUE,
+        'not null' => TRUE
+      ),
+      'source_nid' => array(
+        'type' => 'int',
+        'unsigned' => TRUE,
+        'not null' => TRUE,
+        'default' => 0,
+        'description' => "The source node id.",
+      ),
+      'source_uid' => array(
+        'type' => 'int',
+        'unsigned' => TRUE,
+        'not null' => TRUE,
+        'default' => 0,
+        'description' => "The source user uid. Can be used to set the destination user uid.",
+      ),
+      'destination_nid' => array(
+        'type' => 'int',
+        'unsigned' => TRUE,
+        'not null' => TRUE,
+        'default' => 0,
+        'description' => "The destination {node}.nid.",
+      ),
+      'language' => array(
+        'type' => 'varchar',
+        'length' => 12,
+        'not null' => TRUE,
+        'default' => ''
+      ),
+      'status' => array(
+        'description' => 'Flag indicating the migration status (1 = success, 0 = fail).',
+        'type' => 'int',
+        'unsigned' => TRUE,
+        'not null' => TRUE,
+        'default' => 0,
+        'size' => 'small',
+      ),
+      'operation' => array(
+        'description' => 'Operation (0 = create, 1 = update, 2 = delete).',
+        'type' => 'int',
+        'unsigned' => TRUE,
+        'not null' => TRUE,
+        'default' => 0,
+      ),
+      'timestamp' => array(
+        'type' => 'int',
+        'not null' => TRUE,
+        'default' => 0,
+      ),
+    ),
+    'primary key' => array('migrate_id'),
+    'indexes' => array(
+      // @todo review
+      'source_nid' => array('source_nid'),
+      'destination_nid' => array('destination_nid'),
+    ),
+  );
+
+  $schema['json_migrate_term'] = array(
+    'description' => 'Stores migration information about taxonomy terms.',
+    'fields' => array(
+      'migrate_id' => array(
+        'type' => 'serial',
+        'unsigned' => TRUE,
+        'not null' => TRUE
+      ),
+      'source_tid' => array(
+        'type' => 'int',
+        'unsigned' => TRUE,
+        'not null' => TRUE,
+        'default' => 0,
+        'description' => "The source term tid.",
+      ),
+      'source_vid' => array(
+        'type' => 'int',
+        'unsigned' => TRUE,
+        'not null' => TRUE,
+        'default' => 0,
+        'description' => "The source vocabulary vid.",
+      ),
+      'destination_tid' => array(
+        'type' => 'int',
+        'unsigned' => TRUE,
+        'not null' => TRUE,
+        'default' => 0,
+        'description' => "The destination {taxonomy_term_data}.tid.",
+      ),
+      'language' => array(
+        'type' => 'varchar',
+        'length' => 12,
+        'not null' => TRUE,
+        'default' => ''
+      ),
+      'status' => array(
+        'description' => 'Flag indicating the migration status (1 = success, 0 = fail).',
+        'type' => 'int',
+        'unsigned' => TRUE,
+        'not null' => TRUE,
+        'default' => 0,
+        'size' => 'small',
+      ),
+      'operation' => array(
+        'description' => 'Operation (0 = create, 1 = update, 2 = delete).',
+        'type' => 'int',
+        'unsigned' => TRUE,
+        'not null' => TRUE,
+        'default' => 0,
+      ),
+      'timestamp' => array(
+        'type' => 'int',
+        'not null' => TRUE,
+        'default' => 0,
+      ),
+    ),
+    'primary key' => array('migrate_id'),
+    'indexes' => array(
+      // @todo review
+      'source_tid' => array('source_tid'),
+      'destination_tid' => array('destination_tid'),
+    ),
+  );
+
+  return $schema;
+}

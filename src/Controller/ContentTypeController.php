@@ -18,12 +18,13 @@ use Drupal\json_migrate\Model\ContentType\ContentTypeMigrationFactory;
 class ContentTypeController extends ControllerBase
 {
   /**
-   * Migrate.
+   * Migrates content types.
    *
    * @return string
    */
   public function migrate($name, $translation_mode)
   {
+
     $migration = new ContentTypeMigrationFactory();
     $response = array(
       '#type' => 'markup',
@@ -32,7 +33,7 @@ class ContentTypeController extends ControllerBase
     try {
       $contentTypeMigration = $migration->createMigration($name);
       if($contentTypeMigration instanceof ContentTypeMigrationInterface) {
-        // should return a list of contents to migrate to be passed to the batch
+        // returns batch_process
         $response = $contentTypeMigration->prepareMigration($name, $translation_mode);
       }
     }catch(\InvalidArgumentException $e) {

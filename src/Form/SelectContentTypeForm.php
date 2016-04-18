@@ -48,14 +48,14 @@ class SelectContentTypeForm extends FormBase {
       '#type' => 'radios',
       '#title' => $this->t('Source translation mode'),
       '#options' => $this->getSourceTranslationModes(),
-      '#description' => $this->t('Drupal 7 translation mode'),
+      '#description' => $this->t('Drupal 7 translation mode. i18n only, other modes not implemented yet.'),
       '#required' => true,
     );
     $form['source_content_type'] = array(
       '#type' => 'radios',
       '#title' => $this->t('Source content type class name'),
       '#options' => $this->getSourceContentTypes(),
-      '#description' => $this->t('Drupal 7 content type to migrate'),
+      '#description' => $this->t('Drupal 7 content type to migrate.'),
       '#required' => true,
     );
     $form['actions']['#type'] = 'actions';

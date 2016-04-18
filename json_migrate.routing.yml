@@ -7,6 +7,14 @@ json_migrate.select_content_type_form:
   requirements:
     _permission: 'administer content'
 
+json_migrate.select_vocabulary_form:
+  path: 'admin/migrate/json/vocabularies'
+  defaults:
+    _form: '\Drupal\json_migrate\Form\SelectVocabularyForm'
+    _title: 'Select vocabulary to migrate'
+  requirements:
+    _permission: 'administer content'
+
 json_migrate.content_type_migrate:
   path: 'admin/migrate/json/content-type/{name}/{translation_mode}'
   defaults:
@@ -15,8 +23,16 @@ json_migrate.content_type_migrate:
   requirements:
     _permission: 'administer content'
 
+json_migrate.vocabulary_migrate:
+  path: 'admin/migrate/json/vocabulary/{name}'
+  defaults:
+    _controller: '\Drupal\json_migrate\Controller\VocabularyController::migrate'
+    _title: 'Content type migration'
+  requirements:
+    _permission: 'administer content'
+
 json_migrate.source_debug:
-  path: 'admin/migrate/json/debug/source/{file_name}/{length}'
+  path: 'admin/migrate/json/debug/source/{type}/{file_name}/{length}'
   defaults:
     _controller: '\Drupal\json_migrate\Controller\SourceDebugController::printDebug'
     _title: 'Source debug'
@@ -26,7 +42,7 @@ json_migrate.source_debug:
 json_migrate.batch_process:
   path: '/admin/migrate/json/batch/process'
   defaults:
-    _controller: '\Drupal\json_migrate\Controller\BatchProcessController::initBatch'
+    _controller: '\Drupal\json_migrate\Controller\BatchController::initBatch'
     _title: 'Batch init'
   requirements:
     _permission: 'administer content'
@@ -34,7 +50,7 @@ json_migrate.batch_process:
 json_migrate.batch_finish:
   path: '/admin/migrate/json/batch/finish'
   defaults:
-    _controller: '\Drupal\json_migrate\Controller\BatchFinishController::getResults'
+    _controller: '\Drupal\json_migrate\Controller\BatchController::getResults'
     _title: 'Batch results'
   requirements:
     _permission: 'administer content'

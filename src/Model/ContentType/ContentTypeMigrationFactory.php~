@@ -24,14 +24,6 @@ class ContentTypeMigrationFactory {
       // define here the content types and class mapping
       'article' => __NAMESPACE__ . '\ArticleMigration',
       'page' => __NAMESPACE__ . '\PageMigration',
-      'activity' => __NAMESPACE__ . '\ActivityMigration',
-      'room' => __NAMESPACE__ . '\RoomMigration',
-      'team' => __NAMESPACE__ . '\TeamMigration',
-      // @todo
-      'news' => __NAMESPACE__ . '\NewsMigration',
-      'pedagogical_tool' => __NAMESPACE__ . '\DocumentationMigration',
-      'press_file' => __NAMESPACE__ . '\PressMigration',
-      'temporary_exhibition' => __NAMESPACE__ . '\ExhibitionMigration',
     );
   }
 
