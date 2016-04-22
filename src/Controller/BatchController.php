@@ -3,11 +3,11 @@ namespace Drupal\json_migrate\Controller;
 
 use Drupal\Core\Controller\ControllerBase;
 use Drupal\Core\Url;
-use Drupal\json_migrate\Model\ContentType\ContentTypeMigration;
-use Drupal\json_migrate\Model\ContentType\NodeMigrationResultVO;
-use Drupal\json_migrate\Model\MigrationInterface;
-use Drupal\json_migrate\Model\MigrationResultVOInterface;
-use Drupal\json_migrate\Model\Vocabulary\TermMigrationResultVO;
+use Drupal\json_migrate\Entity\ContentType\ContentTypeMigration;
+use Drupal\json_migrate\Entity\ContentType\NodeMigrationResultVO;
+use Drupal\json_migrate\Entity\MigrationInterface;
+use Drupal\json_migrate\Entity\MigrationResultVOInterface;
+use Drupal\json_migrate\Entity\Vocabulary\TermMigrationResultVO;
 use Drupal\node\Entity\Node;
 use Drupal\taxonomy\Entity\Term;
 use Symfony\Component\HttpFoundation\Response;
@@ -70,7 +70,24 @@ class BatchController extends ControllerBase
    */
   private static function logTermMigration($entry, Term $term, $operation)
   {
-    // @todo implement
+    $fields = array(
+      'source_tid' => (int) $entry->term_id,
+      'source_vid' => (int) $entry->vocabulary_id,
+      'destination_tid' => (int) $term->id(),
+      'language' => (string) 'en', // @todo set language
+      'status' => 1,
+      'operation' => (int) $operation,
+      'timestamp' => REQUEST_TIME,
+    );
+
+    try{
+      $insert = \Drupal::database()->insert('json_migrate_node');
+      //$insert = Database::getConnection('default')->insert('json_migrate_node');
+      $insert->fields($fields);
+      $insert->execute();
+    }catch (\Exception $e) {
+      drupal_set_message($e->getMessage(), 'error');
+    }
   }
 
   /**
@@ -99,6 +116,7 @@ class BatchController extends ControllerBase
     if(isset($migrationHelper)) {
 
       $migrationResult = $migrationHelper->batchCallback($entry);
+      $itemMessage = '';
 
       // fail logging
       // @todo check interface
@@ -119,7 +137,9 @@ class BatchController extends ControllerBase
       // success logging
       }else {
         // @todo refactoring needed within the several migration helpers (node, term, user)
-        // term migration
+        // @todo create NodeEntryVO and TermEntryVO
+
+        // node migration
         if($migrationResult instanceof NodeMigrationResultVO) {
           \Drupal::logger('json_migrate')->info(
             \Drupal::translation()
@@ -128,6 +148,7 @@ class BatchController extends ControllerBase
           );
 
           $node = $migrationResult->getSourceNode();
+          $itemMessage = $entry->title;
           BatchController::logNodeMigration($entry, $node, $operation);
 
           if($migrationResult->hasTranslations()) {
@@ -144,8 +165,10 @@ class BatchController extends ControllerBase
                 array('%term_tid' => $entry->tid))
           );
 
-          $term = $migrationResult->getSourceTerm();
-          BatchController::logTermMigration($entry, $term, $operation);
+          $term = $migrationResult->getTerm();
+          $itemMessage = $entry->term_name;
+          // @todo logging
+          //BatchController::logTermMigration($entry, $term, $operation);
         }
 
       }
@@ -153,7 +176,11 @@ class BatchController extends ControllerBase
       drupal_set_message(t('No migration helper defined.'));
     }
 
-    // @todo batch follow up on screen
+    //    Store some result for post-processing in the finished callback.
+    //    $context['results'][] = $content;
+    $context['message'] = t('Now processing %item', array('%item' => $itemMessage));
+
+    // @todo batch follow up
     //    review e.g. \Drupal\migrate_drupal_ui\MigrateUpgradeRunBatch
     //    if (!isset($context['sandbox']['current'])) {
     //      $context['sandbox']['current_id'] = $content->id; // @todo get id, e.g. nid
@@ -171,10 +198,6 @@ class BatchController extends ControllerBase
     //      $context['sandbox']['messages'][] = ''; // @todo optional message
     //      $context['results']['successes']++; // @todo fetched from the result
     //    }
-
-    //    Store some result for post-processing in the finished callback.
-    //    $context['results'][] = $content;
-    //    $context['message'] = t('Now processing %node', array('%node' => $content));
 
     //    if ($errors = $myWorkerClass->getErrors()) {
     //      if (!isset($context['results']['errors'])) {

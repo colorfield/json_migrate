@@ -7,8 +7,8 @@
 namespace Drupal\json_migrate\Controller;
 
 use Drupal\Core\Controller\ControllerBase;
-use Drupal\json_migrate\Model\ContentType\ContentTypeMigrationInterface;
-use Drupal\json_migrate\Model\ContentType\ContentTypeMigrationFactory;
+use Drupal\json_migrate\Entity\ContentType\ContentTypeMigrationInterface;
+use Drupal\json_migrate\Entity\ContentType\ContentTypeMigrationFactory;
 
 /**
  * Class ContentTypeController.

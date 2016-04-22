@@ -1,6 +1,6 @@
 <?php
 
-namespace Drupal\json_migrate\Model;
+namespace Drupal\json_migrate\Entity;
 
 class AbstractMigration
 {

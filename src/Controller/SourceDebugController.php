@@ -8,9 +8,11 @@ namespace Drupal\json_migrate\Controller;
 
 use Drupal\Core\Controller\ControllerBase;
 use Drupal\Core\File\FileSystem;
+use Drupal\Core\Link;
+use Drupal\Core\Url;
 use Drupal\json_migrate\JSONReader;
-use Drupal\json_migrate\Model\ContentType\ContentTypeMigration;
-use Drupal\json_migrate\Model\Vocabulary\VocabularyMigration;
+use Drupal\json_migrate\Entity\ContentType\ContentTypeMigration;
+use Drupal\json_migrate\Entity\Vocabulary\VocabularyMigration;
 use Symfony\Component\DependencyInjection\ContainerInterface;
 
 /**
@@ -20,6 +22,8 @@ use Symfony\Component\DependencyInjection\ContainerInterface;
  */
 class SourceDebugController extends ControllerBase
 {
+
+  const NUMBER_ITEMS = 5; // @todo set in configuration form
 
   private $jsonReader;
   private $fileSystem;
@@ -40,15 +44,31 @@ class SourceDebugController extends ControllerBase
   }
 
   /**
+   * Returns the documentation link.
+   * @return mixed
+   */
+  public static function getDebugLink($entity_type, $bundle)
+  {
+    $path = '/admin/migrate/json/debug/source/'
+      .$entity_type.'/'.$bundle.'/'.SourceDebugController::NUMBER_ITEMS;
+    $url = Url::fromUri('internal:'.$path);
+    $link = Link::fromTextAndUrl(t('View JSON source'), $url);
+    $link = $link->toRenderable();
+    $link['#attributes'] = array('class' => array('documentation'));
+    $output = render($link);
+    return $output;
+  }
+
+  /**
    * Reads a JSON source and prints entries via Kint.
    *
    * @return string
    */
-  public function printDebug($type, $file_name, $length)
+  public function printDebug($entity_type, $file_name, $length)
   {
     $path = '';
     // @todo improve via a factory / interface (avoid switch)
-    switch($type){
+    switch($entity_type){
       case 'content-type':
         $path = $this->fileSystem->realpath(ContentTypeMigration::JSON_PATH);
         break;
@@ -71,7 +91,7 @@ class SourceDebugController extends ControllerBase
         $count = 0;
         $debug = [];
         // limit applies only to content type nodes
-        // @todo terms views export provides a root node "terms"
+        // @todo get rid of the terms views root property "terms"
         foreach($json['json'] as $entry) {
           if($count < (int) $length) {
             $debug[] = $entry;
@@ -82,7 +102,11 @@ class SourceDebugController extends ControllerBase
         }
         kint($debug);
       }else{
-        drupal_set_message($this->t('Could not read the file.'), 'error');
+        drupal_set_message(
+          $this->t('File not found or not readable. Make sure that the JSON file %file exists',
+            array('%file' => $path . '/' . $file_name.'.txt')
+          ),
+          'error');
         kint($json['errors']);
       }
     }else{

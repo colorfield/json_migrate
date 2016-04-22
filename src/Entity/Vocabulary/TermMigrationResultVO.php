@@ -1,29 +1,29 @@
 <?php
 
-namespace Drupal\json_migrate\Model\Vocabulary;
+namespace Drupal\json_migrate\Entity\Vocabulary;
 
 
-use Drupal\json_migrate\Model\MigrationResultVOInterface;
+use Drupal\json_migrate\Entity\MigrationResultVOInterface;
 
 class TermMigrationResultVO implements MigrationResultVOInterface
 {
   private $error;
-  private $sourceTerm;
+  private $term;
 
   /**
    * @return mixed
    */
-  public function getSourceTerm()
+  public function getTerm()
   {
-    return $this->sourceTerm;
+    return $this->term;
   }
 
   /**
    * @param mixed $sourceTerm
    */
-  public function setSourceTerm($sourceTerm)
+  public function setTerm($term)
   {
-    $this->sourceTerm = $sourceTerm;
+    $this->term = $term;
   }
 
   public function getError()

@@ -62,13 +62,13 @@ If hierarchy is needed, it can be obtained via the Views Tree contrib module.
 
 Vocabularies, as references of content types should be migrated first.
 
-1. Define the mapping between the vocabularies source and destination machine names in json_migrate/src/Model/Vocabulary/VocabularyMigration class. The keys are used for the JSON file names.
+1. Define the mapping between the vocabularies source and destination machine names in json_migrate/src/Entity/Vocabulary/VocabularyMigration class. The keys are used for the JSON file names.
 2. Go to admin/migrate/json/admin/migrate/json/vocabularies and select the vocabulary to migrate.
 
 ### Content types
 
 If there are entity references from a content type to another, the referenced content types should be migrated first.
 
-1. In json_migrate/src/Model/ContentType, create the migration classes that inherits from ContentTypeMigration and implements the MigrationInterface.
-2. Define the mapping between the content types machine name and the migration classes in json_migrate/src/Model/ContentType/ContentTypeMigrationFactory. The keys are used for the JSON file names.
+1. In json_migrate/src/Entity/ContentType, create the migration classes that inherits from ContentTypeMigration and implements the MigrationInterface.
+2. Define the mapping between the content types machine name and the migration classes in json_migrate/src/Entity/ContentType/ContentTypeMigrationFactory. The keys are used for the JSON file names.
 3. Go to admin/migrate/json/content-types and select the translation options / content type to migrate.

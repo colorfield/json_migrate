@@ -1,3 +1,11 @@
+json_migrate.admin_overview:
+  path: 'admin/migrate/json'
+  defaults:
+    _controller: '\Drupal\json_migrate\Controller\JSONMigrateController::adminOverview'
+    _title: 'JSON migrate'
+  requirements:
+    _permission: 'administer content'
+
 # https://www.drupal.org/node/2117411
 json_migrate.select_content_type_form:
   path: 'admin/migrate/json/content-types'
@@ -32,7 +40,7 @@ json_migrate.vocabulary_migrate:
     _permission: 'administer content'
 
 json_migrate.source_debug:
-  path: 'admin/migrate/json/debug/source/{type}/{file_name}/{length}'
+  path: 'admin/migrate/json/debug/source/{entity_type}/{file_name}/{length}'
   defaults:
     _controller: '\Drupal\json_migrate\Controller\SourceDebugController::printDebug'
     _title: 'Source debug'

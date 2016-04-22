@@ -10,7 +10,9 @@ namespace Drupal\json_migrate\Form;
 
 use Drupal\Core\Form\FormBase;
 use Drupal\Core\Form\FormStateInterface;
-use Drupal\json_migrate\Model\Vocabulary\VocabularyMigration;
+use Drupal\json_migrate\Controller\JSONMigrateController;
+use Drupal\json_migrate\Controller\SourceDebugController;
+use Drupal\json_migrate\Entity\Vocabulary\VocabularyMigration;
 
 /**
  * Class SelectContentTypeForm.
@@ -21,7 +23,14 @@ class SelectVocabularyForm extends FormBase {
 
   private function getSourceVocabularies()
   {
-    return VocabularyMigration::$sourceVocabularies;
+    $vocabularies = VocabularyMigration::$sourceVocabularies;
+    $result = [];
+    // append source debug link
+    foreach ($vocabularies as $key => $vocabulary) {
+      $result[$key] = $vocabulary['title'] . ' - '
+        . SourceDebugController::getDebugLink('vocabulary', $key);
+    }
+    return $result;
   }
 
   /**
@@ -40,7 +49,8 @@ class SelectVocabularyForm extends FormBase {
       '#type' => 'radios',
       '#title' => $this->t('Source vocabulary machine name'),
       '#options' => $this->getSourceVocabularies(),
-      '#description' => $this->t('Drupal 7 vocabularies to migrate.'),
+      '#description' => $this->t('Drupal 7 vocabularies to migrate.')
+                        . JSONMigrateController::getDocumentationLink(),
       '#required' => true,
     );
     $form['actions']['#type'] = 'actions';

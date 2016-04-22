@@ -1,5 +1,5 @@
 <?php
-namespace Drupal\json_migrate\Model\ContentType;
+namespace Drupal\json_migrate\Entity\ContentType;
 
 
 interface ContentTypeMigrationInterface

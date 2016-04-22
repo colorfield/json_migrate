@@ -5,9 +5,9 @@
  * Node migration result Value Object.
  */
 
-namespace Drupal\json_migrate\Model\ContentType;
+namespace Drupal\json_migrate\Entity\ContentType;
 
-use Drupal\json_migrate\Model\MigrationResultVOInterface;
+use Drupal\json_migrate\Entity\MigrationResultVOInterface;
 use Drupal\node\Entity\Node;
 
 class NodeMigrationResultVO implements MigrationResultVOInterface
@@ -34,6 +34,9 @@ class NodeMigrationResultVO implements MigrationResultVOInterface
   }
 
   /**
+   * @todo change ambiguous naming source can stand for source (legacy CMS)
+   * or translation source
+   * here it stands for translation source
    * @return mixed
    */
   public function getSourceNode()

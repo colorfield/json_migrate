@@ -1,11 +1,11 @@
 <?php
 
-namespace Drupal\json_migrate\Model\ContentType;
+namespace Drupal\json_migrate\Entity\ContentType;
 
 use Drupal\json_migrate\Controller\BatchController;
 use Drupal\json_migrate\JSONMigrateException;
-use Drupal\json_migrate\Model\AbstractMigration;
-use Drupal\json_migrate\Model\MigrationInterface;
+use Drupal\json_migrate\Entity\AbstractMigration;
+use Drupal\json_migrate\Entity\MigrationInterface;
 use \Drupal\node\Entity\Node;
 
 /**
@@ -13,7 +13,7 @@ use \Drupal\node\Entity\Node;
  * @todo further refactoring needed for taxonomy (e.g. EntityMigration)
  * @todo review the directory structure, e.g. extends ControllerBase
  * Class ContentTypeMigration
- * @package Drupal\json_migrate\Model
+ * @package Drupal\json_migrate\Entity
  */
 abstract class ContentTypeMigration  extends AbstractMigration implements MigrationInterface
 {
@@ -57,15 +57,6 @@ abstract class ContentTypeMigration  extends AbstractMigration implements Migrat
     // @todo use DI if ControllerBase available
     //$this->loggerFactory = \Drupal::service('logger.factory');
   }
-
-  /**
-   * @inheritdoc
-   */
-  /*
-  public static function create(ContainerInterface $container) {
-    return new static($container->get('logger.factory'));
-  }
-  */
 
   /**
    * Main entry point before called before the migrate method.
@@ -224,6 +215,23 @@ abstract class ContentTypeMigration  extends AbstractMigration implements Migrat
 
     $node->save();
     return $node;
+  }
+
+  /**
+   * @todo description
+   * @param \Drupal\node\Entity\Node $node
+   * @param $url
+   */
+  protected function attachFileFromURL($url)
+  {
+    // @todo implement
+    $data = file_get_contents($url);
+    // @todo get file name
+    $filName = 'test.png';
+    // @todo fetch result
+    // @todo get directory
+    $file = file_save_data($data, 'public://'.$filName, FILE_EXISTS_REPLACE);
+    return $file;
   }
 
   /**

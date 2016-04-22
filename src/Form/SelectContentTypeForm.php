@@ -10,8 +10,10 @@ namespace Drupal\json_migrate\Form;
 
 use Drupal\Core\Form\FormBase;
 use Drupal\Core\Form\FormStateInterface;
-use Drupal\json_migrate\Model\ContentType\ContentTypeMigration;
-use Drupal\json_migrate\Model\ContentType\ContentTypeMigrationFactory;
+use Drupal\json_migrate\Controller\JSONMigrateController;
+use Drupal\json_migrate\Controller\SourceDebugController;
+use Drupal\json_migrate\Entity\ContentType\ContentTypeMigration;
+use Drupal\json_migrate\Entity\ContentType\ContentTypeMigrationFactory;
 
 /**
  * Class SelectContentTypeForm.
@@ -23,7 +25,14 @@ class SelectContentTypeForm extends FormBase {
   private function getSourceContentTypes() 
   {
     $contentTypeMigrationFactory = new ContentTypeMigrationFactory();
-    return $contentTypeMigrationFactory->sourceContentTypes;
+    $contentTypes = $contentTypeMigrationFactory->sourceContentTypes;
+    $result = [];
+    // append source debug link
+    foreach ($contentTypes as $key => $contentType) {
+      $result[$key] = $contentType . ' - '
+        . SourceDebugController::getDebugLink('content-type', $key);
+    }
+    return $result;
   }
 
   private function getSourceTranslationModes() 
@@ -55,7 +64,8 @@ class SelectContentTypeForm extends FormBase {
       '#type' => 'radios',
       '#title' => $this->t('Source content type class name'),
       '#options' => $this->getSourceContentTypes(),
-      '#description' => $this->t('Drupal 7 content type to migrate.'),
+      '#description' => $this->t('Drupal 7 content type to migrate.')
+                        . JSONMigrateController::getDocumentationLink(),
       '#required' => true,
     );
     $form['actions']['#type'] = 'actions';
