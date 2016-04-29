@@ -15,7 +15,7 @@ I had some issues with the --file option that produces no results.
 A basic workaround is to redirect the output by hand :
 ```
 touch article.txt
-drush ne-export--type=article > article.txt
+drush ne-export --type=article > article.txt
 ```
 ### Terms by Vocabularies
 
