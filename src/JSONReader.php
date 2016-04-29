@@ -33,8 +33,8 @@ class JSONReader
   {
     $result = [];
     $result['errors'] = [];
-    $this->source = $real_path.DIRECTORY_SEPARATOR.$file_name;
-    dsm($this->source);
+    $this->source = $real_path . DIRECTORY_SEPARATOR . $file_name;
+    
     try{
       if(file_exists($this->source)) {
         $handle = fopen($this->source, "r");

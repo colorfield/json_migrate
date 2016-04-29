@@ -5,6 +5,7 @@ use Drupal\json_migrate\Controller\BatchController;
 use Drupal\json_migrate\Entity\AbstractMigration;
 use Drupal\json_migrate\Entity\MigrationInterface;
 use Drupal\taxonomy\Entity\Term;
+use Drupal\taxonomy\TermStorage;
 
 /**
  * Class VocabularyMigration
@@ -46,7 +47,7 @@ class VocabularyMigration extends AbstractMigration implements MigrationInterfac
     }
     if(isset($destinationVocabularyMachineName)){
       // @todo implement udpate and delete operations
-      $term = Term::create(array(
+      $result = Term::create(array(
         'name' => $entry->term_name,
         'vid' => $destinationVocabularyMachineName,
         'description' => [
@@ -55,7 +56,17 @@ class VocabularyMigration extends AbstractMigration implements MigrationInterfac
         ],
         'weight' => $entry->weight,
       ))->save();
-      $resultVO->setTerm($term);
+
+      // @todo get the saved term to populate the mapping table
+
+      //if($result) {
+        //
+        // @todo should be a better way to achieve this
+
+        $term = null;
+        $resultVO->setTerm($term);
+      //}
+
     }else{
       $resultVO->setError(t('No destination vocabulary found.'));
     }

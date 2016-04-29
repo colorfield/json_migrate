@@ -81,9 +81,7 @@ class SourceDebugController extends ControllerBase
         break;
     }
 
-    // @todo limit entries
     $json = $this->jsonReader->read($path, $file_name.'.txt');
-
     // @todo if module exists kint
     if(function_exists('kint')) {
       if(empty($json['errors'])){
@@ -110,7 +108,7 @@ class SourceDebugController extends ControllerBase
         kint($json['errors']);
       }
     }else{
-      drupal_set_message($this->t('Install the Kint module to view the results.'), 'error');
+      drupal_set_message($this->t('Install the Kint (drush en devel kint) module to view the results.'), 'error');
     }
 
     $build = array(

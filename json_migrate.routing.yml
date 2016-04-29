@@ -47,6 +47,24 @@ json_migrate.source_debug:
   requirements:
     _permission: 'administer content'
 
+# @todo document, display in UI
+json_migrate.destination_debug:
+  path: 'admin/migrate/json/debug/destination/print/{entity_type}/{entity_id}'
+  defaults:
+    _controller: '\Drupal\json_migrate\Controller\DestinationEntityDebugController::printDebug'
+    _title: 'Source debug'
+  requirements:
+    _permission: 'administer content'
+
+# @todo document, display in UI
+json_migrate.destination_create:
+  path: 'admin/migrate/json/debug/destination/create/{entity_type}/{source_file}'
+  defaults:
+    _controller: '\Drupal\json_migrate\Controller\DestinationEntityDebugController::createEntity'
+    _title: 'Create entity from a file input, unit test'
+  requirements:
+    _permission: 'administer content'
+
 json_migrate.batch_process:
   path: '/admin/migrate/json/batch/process'
   defaults:

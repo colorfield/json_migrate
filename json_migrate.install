@@ -64,6 +64,12 @@ function json_migrate_schema()
         'default' => 0,
         'size' => 'small',
       ),
+      'url_alias' => array(
+        'type' => 'varchar',
+        'length' => 254,
+        'not null' => FALSE,
+        'default' => ''
+      ),
       'operation' => array(
         'description' => 'Operation (0 = create, 1 = update, 2 = delete).',
         'type' => 'int',

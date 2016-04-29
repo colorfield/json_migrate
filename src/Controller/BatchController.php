@@ -40,11 +40,21 @@ class BatchController extends ControllerBase
       $nid = $i18n_source_nid;
     }
 
+    // @todo fix language $node->language()
+    $language = 'fr';
+
+    // old alias can be used for redirects or define new paths
+    $alias = '';
+    if(!empty($entry->path->alias)) {
+      $alias = $entry->path->alias;
+    }
+
     $fields = array(
       'source_nid' => (int) $nid,
       'source_uid' => (int) $entry->uid,
       'destination_nid' => (int) $node->id(),
-      'language' => (string) $node->language(), // @todo fix language
+      'language' => (string) $language,
+      'url_alias' => (string) $alias,
       'status' => 1,
       'operation' => (int) $operation,
       'timestamp' => REQUEST_TIME,

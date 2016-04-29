@@ -11,13 +11,10 @@ class PageMigration extends ContentTypeMigration
   /**
    * @inheritdoc
    */
-  protected function prepareCustomNodeProperties($entry)
+  protected function prepareCustomNodeProperties(&$node_properties, $entry)
   {
-    $properties = array(
-      'type' => 'page',
-    );
+    $node_properties['type'] = 'page';
     // @todo add custom properties
-    return $properties;
   }
 
   /**

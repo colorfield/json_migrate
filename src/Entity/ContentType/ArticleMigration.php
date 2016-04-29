@@ -11,13 +11,10 @@ class ArticleMigration extends ContentTypeMigration
   /**
    * @inheritdoc
    */
-  protected function prepareCustomNodeProperties($entry)
+  protected function prepareCustomNodeProperties(&$node_properties, $entry)
   {
-    $properties = array(
-      'type' => 'article',
-    );
+    $node_properties['type'] = 'article';
     // @todo add custom properties
-    return $properties;
   }
 
   /**

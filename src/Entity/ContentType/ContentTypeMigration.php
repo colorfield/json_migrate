@@ -6,7 +6,8 @@ use Drupal\json_migrate\Controller\BatchController;
 use Drupal\json_migrate\JSONMigrateException;
 use Drupal\json_migrate\Entity\AbstractMigration;
 use Drupal\json_migrate\Entity\MigrationInterface;
-use \Drupal\node\Entity\Node;
+use Drupal\node\Entity\Node;
+use Drupal\file\Entity\File;
 
 /**
  * Common helpers for content type migration
@@ -125,10 +126,12 @@ abstract class ContentTypeMigration  extends AbstractMigration implements Migrat
    * for a Drupal 8 node object.
    * Method to be overridden by concrete classes provided by the
    * ContentTypeMigrationFactory.
+   *
    * @param $entry
-   * @return array
+   * @param $node_properties
+   * @return mixed
    */
-  abstract protected function prepareCustomNodeProperties($entry);
+  abstract protected function prepareCustomNodeProperties(&$node_properties, $entry);
 
   /**
    * Custom fields that must be translated (not shared amongst translations).
@@ -187,9 +190,13 @@ abstract class ContentTypeMigration  extends AbstractMigration implements Migrat
 
     if(!$isTranslation) {
       //dsm('Source');
-      $node_common_properties = $this->prepareCommonNodeProperties($entry);
-      $node_custom_properties = $this->prepareCustomNodeProperties($entry);
-      $node_properties = array_merge($node_common_properties, $node_custom_properties);
+      // $node_properties is passed by reference to prepareCustomNodeProperties
+      // this structure allows overrides of common node properties, in case
+      // of fields merge (e.g. concatenate several fields in the body) or
+      // for other purposes
+      $node_properties = $this->prepareCommonNodeProperties($entry);
+      $this->prepareCustomNodeProperties($node_properties, $entry);
+      //$node_properties = array_merge($node_common_properties, $node_custom_properties);
       $node = Node::create($node_properties);
       if(empty($node)) {
         throw new JSONMigrateException(t('Error on node creation.'));
@@ -218,21 +225,27 @@ abstract class ContentTypeMigration  extends AbstractMigration implements Migrat
   }
 
   /**
-   * @todo description
+   * Creates a file from an absolute URL
    * @param \Drupal\node\Entity\Node $node
    * @param $url
    */
-  protected function attachFileFromURL($url)
+  protected function saveFileFromURL($url, $fileName)
   {
-    // @todo implement
     $data = file_get_contents($url);
-    // @todo get file name
-    $filName = 'test.png';
     // @todo fetch result
     // @todo get directory
-    $file = file_save_data($data, 'public://'.$filName, FILE_EXISTS_REPLACE);
+    $file = file_save_data($data, 'public://'.$fileName, FILE_EXISTS_REPLACE);
     return $file;
   }
+
+  protected function copyFileFromLocalSource($source, $destination) {
+    //
+  }
+
+  protected function attachFileToNode($file, $node) {
+
+  }
+
 
   /**
    * Migrates from i18n.
