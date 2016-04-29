@@ -35,15 +35,22 @@ drush en views_json
 ### Nodes by content types
 
 ```
-mkdir drupal_8_path/sites/default/files/migrate/content-type
+mkdir -p drupal_8_path/sites/default/files/migrate/content-type
 cp drupal_7_export_path/{content_type_name}.txt drupal_8_path/sites/default/files/migrate/content-type/{content_type_name}.txt
 ```
 
-### Terms by vocabularies
+### Debug
+
+Helpers prints the data structure with Kint.
 
 Debugging of the json export can be done via
 - admin/migrate/json/debug/source/content_type/{content_type_name}/{number_of_items_to_print}
 - admin/migrate/json/debug/source/vocabulary/{vocabulary_name}/{number_of_items_to_print}
+
+Debugging of the result can be done via
+- admin/migrate/json/debug/destination/{entity_type}/{entity_id}
+
+Where entity type can be node, term or file.
 
 ## Define a class mapping
 
