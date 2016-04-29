@@ -48,7 +48,7 @@ Debugging of the json export can be done via
 - admin/migrate/json/debug/source/vocabulary/{vocabulary_name}/{number_of_items_to_print}
 
 Debugging of the result can be done via
-- admin/migrate/json/debug/destination/{entity_type}/{entity_id}
+- admin/migrate/json/debug/destination/print/{entity_type}/{entity_id}
 
 Where entity type can be node, term or file.
 
