@@ -9,7 +9,7 @@ For Drupal 7, you can use node export (https://www.drupal.org/project/node_expor
 Install it on your Drupal 7 website then you can get the options with `drush help ne-export`.
 
 A basic export of a content type can be done via
-`drush ne-export--type=article --file=article.txt`
+`drush ne-export --type=article --file=article.txt`
 
 I had some issues with the --file option that produces no results.
 A basic workaround is to redirect the output by hand :
