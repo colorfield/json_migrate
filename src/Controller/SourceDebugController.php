@@ -93,6 +93,7 @@ class SourceDebugController extends ControllerBase
         foreach($json['json'] as $entry) {
           if($count < (int) $length) {
             $debug[] = $entry;
+            //kint($entry->field_picture->und[0]->uri);
           }else {
             break;
           }

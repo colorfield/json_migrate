@@ -11,9 +11,7 @@ use Drupal\taxonomy\Entity\Term;
  * Usage
  * $ec = new EntityCreator();
  * $term = $ec->createTerm('tags', 'test tag', 'test desc');
- * kint($term);
  * $file = $ec->createFileFromURI('public://logo.png');
- * kint($file);
  * $node = $ec->createNodeWithImage(array(), $file);
  */
 class EntityCreator
@@ -41,8 +39,6 @@ class EntityCreator
     ]);
     $term->save();
     //\Drupal::service('path.alias_storage')->save("/taxonomy/term/" . $term->id(), "/tags/my-tag", "en");
-    drupal_set_message('Term id %id created', array('%id' => $term->id()));
-
     return $term;
   }
 
@@ -75,7 +71,6 @@ class EntityCreator
       'status' => 1,
     ]);
     $file->save();
-    drupal_set_message('File id %id created', array('%id' => $file->id()));
     return $file;
   }
 
@@ -105,6 +100,42 @@ class EntityCreator
   }
 
   /**
+   * Creates a node and attach images.
+   * @param $properties
+   * @param $files
+   * @return \Drupal\Core\Entity\EntityInterface|static
+   */
+  public function createNodeWithImages($properties, $files) {
+
+    $nodeProperties = [
+      'type' => 'article',
+      'langcode' => 'en',
+      'created' => REQUEST_TIME,
+      'changed' => REQUEST_TIME,
+      'uid' => 1,
+      'title' => 'My node with images',
+      'field_tags' => [1,2,3],
+      'body' => [
+        'summary' => '',
+        'value' => 'My node',
+        'format' => 'full_html',
+      ],
+    ];
+
+    foreach($files as $file) {
+      $nodeProperties['field_image'][] = [
+        'target_id' => $file->id(),
+        'alt' => "alt",
+      ];
+    }
+
+    $node = Node::create($nodeProperties);
+    $node->save();
+    // \Drupal::service('path.alias_storage')->save('/node/' . $node->id(), '/my-path', 'en');
+    return $node;
+  }
+
+  /**
    * Creates a node with image field.
    */
   public function createNodeWithImage($properties, File $file)
@@ -115,11 +146,11 @@ class EntityCreator
       'created' => REQUEST_TIME,
       'changed' => REQUEST_TIME,
       'uid' => 1,
-      'title' => 'My node with file',
+      'title' => 'My node with images',
       //'field_tags' =>[2],
       'body' => [
         'summary' => '',
-        'value' => 'My node!',
+        'value' => 'My node',
         'format' => 'full_html',
       ],
       'field_image' => [

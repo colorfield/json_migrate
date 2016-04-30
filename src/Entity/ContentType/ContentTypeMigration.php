@@ -225,6 +225,42 @@ abstract class ContentTypeMigration  extends AbstractMigration implements Migrat
   }
 
   /**
+   * Attaches images from a source field, using URI.
+   * Assumes that a copy of the images lives in public:// (sites/default/files)
+   *
+   * @param $sourceImagesField
+   * @return array
+   */
+  protected function attachImagesFromURI($sourceImagesField) {
+    $destinationImages = [];
+    // @todo cover translated images
+    // do not begin to loop if there is not at least one image
+    if(isset($sourceImagesField->und[0]->uri)) {
+      foreach ($sourceImagesField->und as $sourceImage) {
+        $destinationImage = File::create([
+          'uid' => 1, // @todo map author if necessary
+          'uri' => $sourceImage->uri,
+          'status' => 1,
+        ]);
+        $destinationImage->save();
+        // @todo add title from settings (deprecated for some browsers)
+        $destinationImages[] = [
+          'target_id' => $destinationImage->id(),
+          'alt' => $sourceImage->alt,
+        ];
+      }
+    }
+    return $destinationImages;
+  }
+
+  // @todo
+  /*
+  protected function attachFileFromURI($file, $node) {
+
+  }
+  */
+
+  /**
    * Creates a file from an absolute URL
    * @param \Drupal\node\Entity\Node $node
    * @param $url
@@ -238,12 +274,37 @@ abstract class ContentTypeMigration  extends AbstractMigration implements Migrat
     return $file;
   }
 
+  /*
   protected function copyFileFromLocalSource($source, $destination) {
     //
   }
+  */
 
-  protected function attachFileToNode($file, $node) {
-
+  /**
+   * Set term references from a source field, using a previously migrated
+   * vocabulary.
+   *
+   * @param $sourceField
+   * @return array
+   */
+  protected function setTermReferences($sourceField) {
+    $terms = array();
+    // fetch the Drupal 8 term id corresponding to the Drupal 7 term id
+    // from the json_migrate_term table
+    // @todo DI for the database
+    // @todo cover translated terms (not localized)
+    if(isset($sourceField->und[0]->tid)) {
+      foreach($sourceField->und as $term) {
+        $query = \Drupal::database()->select('json_migrate_term', 't');
+        $query->fields('t', array('destination_tid'));
+        $query->condition('t.source_tid', $term->tid);
+        $tid = $query->execute()->fetchField();
+        $terms[] = [
+          'target_id' => $tid,
+        ];
+      }
+    }
+    return $terms;
   }
 
 

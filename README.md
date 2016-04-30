@@ -79,3 +79,8 @@ If there are entity references from a content type to another, the referenced co
 1. In json_migrate/src/Entity/ContentType, create the migration classes that inherits from ContentTypeMigration and implements the MigrationInterface.
 2. Define the mapping between the content types machine name and the migration classes in json_migrate/src/Entity/ContentType/ContentTypeMigrationFactory. The keys are used for the JSON file names.
 3. Go to admin/migrate/json/content-types and select the translation options / content type to migrate.
+
+### Files
+
+A first and really simple implementation covers the copy of the files directory from the source website into the destination website.
+This should be done before the Drupal 8 setup or by copying directories inside the files directory (do not replace the whole Drupal 8 files directory).

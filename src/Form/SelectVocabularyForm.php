@@ -50,7 +50,7 @@ class SelectVocabularyForm extends FormBase {
       '#title' => $this->t('Source vocabulary machine name'),
       '#options' => $this->getSourceVocabularies(),
       '#description' => $this->t('Drupal 7 vocabularies to migrate.')
-                        . JSONMigrateController::getDocumentationLink(),
+                        . ' ' . JSONMigrateController::getDocumentationLink(),
       '#required' => true,
     );
     $form['actions']['#type'] = 'actions';

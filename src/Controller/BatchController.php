@@ -22,7 +22,7 @@ class BatchController extends ControllerBase
   /**
    * Logs the migration from a node to a node into the migration table.
    *
-   * @todo move in ContentTypeMigration
+   * @todo create a logger factory
    * @param $entry
    * @param \Drupal\node\Entity\Node $node
    * @param $operation
@@ -80,8 +80,11 @@ class BatchController extends ControllerBase
    */
   private static function logTermMigration($entry, Term $term, $operation)
   {
+    // output from view_json can create comma delimited values
+    // for thousands in some situations
+    $source_term_id = str_replace(',', '', $entry->term_id);
     $fields = array(
-      'source_tid' => (int) $entry->term_id,
+      'source_tid' => (int) $source_term_id,
       'source_vid' => (int) $entry->vocabulary_id,
       'destination_tid' => (int) $term->id(),
       'language' => (string) 'en', // @todo set language
@@ -91,8 +94,8 @@ class BatchController extends ControllerBase
     );
 
     try{
-      $insert = \Drupal::database()->insert('json_migrate_node');
-      //$insert = Database::getConnection('default')->insert('json_migrate_node');
+      $insert = \Drupal::database()->insert('json_migrate_term');
+      //$insert = Database::getConnection('default')->insert('json_migrate_term');
       $insert->fields($fields);
       $insert->execute();
     }catch (\Exception $e) {
@@ -140,14 +143,13 @@ class BatchController extends ControllerBase
         // @todo log errors in table
         /*
         \Drupal::database()->insert('json_migrate_node', array(
-
         ));
         */
 
       // success logging
       }else {
         // @todo refactoring needed within the several migration helpers (node, term, user)
-        // @todo create NodeEntryVO and TermEntryVO
+        // @todo extend and use NodeEntryVO and TermEntryVO
 
         // node migration
         if($migrationResult instanceof NodeMigrationResultVO) {
@@ -169,16 +171,17 @@ class BatchController extends ControllerBase
 
         // term migration
         }elseif($migrationResult instanceof TermMigrationResultVO) {
+
           \Drupal::logger('json_migrate')->info(
             \Drupal::translation()
-              ->translate('Imported term from term tid %term_tid.',
-                array('%term_tid' => $entry->tid))
+              ->translate('Imported term from source term tid %term_tid.',
+                array('%term_tid' => $entry->term_id))
           );
-
           $term = $migrationResult->getTerm();
           $itemMessage = $entry->term_name;
+
           // @todo logging
-          //BatchController::logTermMigration($entry, $term, $operation);
+          BatchController::logTermMigration($entry, $term, $operation);
         }
 
       }

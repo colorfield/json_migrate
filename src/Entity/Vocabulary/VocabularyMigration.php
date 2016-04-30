@@ -38,7 +38,10 @@ class VocabularyMigration extends AbstractMigration implements MigrationInterfac
   // @todo use value objects
   private function termMigrate($entry)
   {
+    //drupal_set_message($entry->term_name);
+
     $resultVO = new TermMigrationResultVO();
+
     $destinationVocabularyMachineName = null;
     foreach(VocabularyMigration::$sourceVocabularies as $sourceMachineName => $vocabulary){
       if($sourceMachineName == $entry->vocabulary_machine_name){
@@ -47,29 +50,36 @@ class VocabularyMigration extends AbstractMigration implements MigrationInterfac
     }
     if(isset($destinationVocabularyMachineName)){
       // @todo implement udpate and delete operations
-      $result = Term::create(array(
-        'name' => $entry->term_name,
+      $language = 'fr'; // @toto fetch from entry
+      $description = '';
+      if(isset($entry->description)) {
+        $description = $entry->description;
+      }
+      $term = Term::create([
         'vid' => $destinationVocabularyMachineName,
+        'langcode' => $language,
+        'name' => $entry->term_name,
         'description' => [
-          'value' => $entry->description,
-          'format' => 'full_html',
+          'value' => $description,
+          'format' => 'full_html', // @todo fetch format from entry
         ],
-        'weight' => $entry->weight,
-      ))->save();
+        'weight' => 0, // @todo weight
+        //'weight' => $entry->weight,
+        //'parent' => array (0),
+      ]);
+      $term->save();
+      //\Drupal::service('path.alias_storage')->save("/taxonomy/term/" . $term->id(), "/tags/my-tag", "en");
+      drupal_set_message(t('Term id %id created', array('%id' => $term->id())));
 
       // @todo get the saved term to populate the mapping table
-
-      //if($result) {
-        //
+      if(isset($term)) {
         // @todo should be a better way to achieve this
-
-        $term = null;
         $resultVO->setTerm($term);
-      //}
-
+      }
     }else{
       $resultVO->setError(t('No destination vocabulary found.'));
     }
+
     return $resultVO;
   }
 
@@ -99,6 +109,7 @@ class VocabularyMigration extends AbstractMigration implements MigrationInterfac
   public function prepareMigration($sourceMachineName,
                                    $sourceTranslationMode = null)
   {
+    drupal_set_message('Prepare migration');
     if($this->getJSON($sourceMachineName, VocabularyMigration::JSON_PATH)) {
       // @todo review memory allocation
       // @todo get rid of the 'terms' root + 'term' wrapper from the view export

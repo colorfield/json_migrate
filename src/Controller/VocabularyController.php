@@ -29,22 +29,13 @@ class VocabularyController extends ControllerBase
       '#type' => 'markup',
       '#markup' => $this->t('Migration for the vocabulary @name', array('@name' => $name)),
     );
-
-    // @todo fetch the term after creation, only a boolean is passed
-    $term = Term::create(array(
-      'name' => 'test',
-      'vid' => 'tags',
-    ))->save();
-
-    //kint($term);
-
     try {
       // returns batch_process
-      //$response = $migration->prepareMigration($name);
+      $response = $migration->prepareMigration($name);
+      //$migration->prepareMigration($name);
     }catch(\InvalidArgumentException $e) {
       drupal_set_message($e->getMessage(), 'error');
     }
     return $response;
   }
-
 }

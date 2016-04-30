@@ -43,25 +43,39 @@ class DestinationEntityDebugController extends ControllerBase
   public function createEntity($entity_type, $source_file) {
 
     // @todo fetch an entry from source file
+    // @todo module exits Kint
     $ec = new EntityCreator();
+    $message = '';
 
     switch($entity_type) {
       case 'node':
-        $file = $ec->createFileFromURI('public://logo.png');
-        $node = $ec->createNodeWithImage(array(), $file);
+        //$file = $ec->createFileFromURI('public://logo.png');
+        //$node = $ec->createNodeWithImage(array(), $file);
+        $file1 = $ec->createFileFromURI('public://image1.png');
+        $file2 = $ec->createFileFromURI('public://image2.png');
+        $files = [$file1, $file2];
+        $node = $ec->createNodeWithImages(array(), $files);
+        kint($node);
+        $message = $this->t('Node id %id created', array('%id' => $node->id()));
         break;
       case 'term':
         $term = $ec->createTerm('tags', 'test tag', 'test desc');
         kint($term);
+        $message = $this->t('Term id %id created', array('%id' => $term->id()));
         break;
       case 'file':
+        $file = $ec->createFileFromURI('public://logo.png');
         kint($file);
+        $message = $this->t('File id %id created', array('%id' => $file->id()));
         break;
     }
 
+    $output = $this->t('Debug purpose only, to be moved in PHPUnit.');
+    $output .= $message;
+
     return [
       '#type' => 'markup',
-      '#markup' => $this->t('Debug purpose only, to be moved in PHPUnit.')
+      '#markup' => $output,
     ];
   }
 

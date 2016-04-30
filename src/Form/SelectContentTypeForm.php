@@ -28,6 +28,7 @@ class SelectContentTypeForm extends FormBase {
     $contentTypes = $contentTypeMigrationFactory->sourceContentTypes;
     $result = [];
     // append source debug link
+    // @todo check if file exists, if not mention it and disable the radio
     foreach ($contentTypes as $key => $contentType) {
       $result[$key] = $contentType . ' - '
         . SourceDebugController::getDebugLink('content-type', $key);
@@ -62,10 +63,10 @@ class SelectContentTypeForm extends FormBase {
     );
     $form['source_content_type'] = array(
       '#type' => 'radios',
-      '#title' => $this->t('Source content type class name'),
+      '#title' => $this->t('Source content type class'),
       '#options' => $this->getSourceContentTypes(),
       '#description' => $this->t('Drupal 7 content type to migrate.')
-                        . JSONMigrateController::getDocumentationLink(),
+                        . ' ' . JSONMigrateController::getDocumentationLink(),
       '#required' => true,
     );
     $form['actions']['#type'] = 'actions';
