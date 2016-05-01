@@ -49,6 +49,7 @@ class SourceDebugController extends ControllerBase
    */
   public static function getDebugLink($entity_type, $bundle)
   {
+    // @todo check if file exists, if not mention it and disable the radio
     $path = '/admin/migrate/json/debug/source/'
       .$entity_type.'/'.$bundle.'/'.SourceDebugController::NUMBER_ITEMS;
     $url = Url::fromUri('internal:'.$path);

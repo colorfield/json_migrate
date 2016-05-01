@@ -1,5 +1,13 @@
+json_migrate.settings:
+  path: '/admin/config/migrate/json_migrate/settings'
+  defaults:
+    _form: '\Drupal\json_migrate\Form\JSONMigrateSettingsForm'
+    _title: 'Configure JSON migrate'
+  requirements:
+    _permission: 'administer site configuration'
+
 json_migrate.admin_overview:
-  path: 'admin/migrate/json'
+  path: '/admin/migrate/json'
   defaults:
     _controller: '\Drupal\json_migrate\Controller\JSONMigrateController::adminOverview'
     _title: 'JSON migrate'
@@ -8,7 +16,7 @@ json_migrate.admin_overview:
 
 # https://www.drupal.org/node/2117411
 json_migrate.select_content_type_form:
-  path: 'admin/migrate/json/content-types'
+  path: '/admin/migrate/json/content-types'
   defaults:
     _form: '\Drupal\json_migrate\Form\SelectContentTypeForm'
     _title: 'Select content type to migrate'
@@ -16,7 +24,7 @@ json_migrate.select_content_type_form:
     _permission: 'administer content'
 
 json_migrate.select_vocabulary_form:
-  path: 'admin/migrate/json/vocabularies'
+  path: '/admin/migrate/json/vocabularies'
   defaults:
     _form: '\Drupal\json_migrate\Form\SelectVocabularyForm'
     _title: 'Select vocabulary to migrate'
@@ -24,7 +32,7 @@ json_migrate.select_vocabulary_form:
     _permission: 'administer content'
 
 json_migrate.content_type_migrate:
-  path: 'admin/migrate/json/content-type/{name}/{translation_mode}'
+  path: '/admin/migrate/json/content-type/{name}/{translation_mode}'
   defaults:
     _controller: '\Drupal\json_migrate\Controller\ContentTypeController::migrate'
     _title: 'Content type migration'
@@ -32,7 +40,7 @@ json_migrate.content_type_migrate:
     _permission: 'administer content'
 
 json_migrate.vocabulary_migrate:
-  path: 'admin/migrate/json/vocabulary/{name}'
+  path: '/admin/migrate/json/vocabulary/{name}'
   defaults:
     _controller: '\Drupal\json_migrate\Controller\VocabularyController::migrate'
     _title: 'Content type migration'
@@ -40,7 +48,7 @@ json_migrate.vocabulary_migrate:
     _permission: 'administer content'
 
 json_migrate.source_debug:
-  path: 'admin/migrate/json/debug/source/{entity_type}/{file_name}/{length}'
+  path: '/admin/migrate/json/debug/source/{entity_type}/{file_name}/{length}'
   defaults:
     _controller: '\Drupal\json_migrate\Controller\SourceDebugController::printDebug'
     _title: 'Source debug'
@@ -49,7 +57,7 @@ json_migrate.source_debug:
 
 # @todo document, display in UI
 json_migrate.destination_debug:
-  path: 'admin/migrate/json/debug/destination/print/{entity_type}/{entity_id}'
+  path: '/admin/migrate/json/debug/destination/print/{entity_type}/{entity_id}'
   defaults:
     _controller: '\Drupal\json_migrate\Controller\DestinationEntityDebugController::printDebug'
     _title: 'Source debug'
@@ -58,7 +66,7 @@ json_migrate.destination_debug:
 
 # @todo document, display in UI
 json_migrate.destination_create:
-  path: 'admin/migrate/json/debug/destination/create/{entity_type}/{source_file}'
+  path: '/admin/migrate/json/debug/destination/create/{entity_type}/{source_file}'
   defaults:
     _controller: '\Drupal\json_migrate\Controller\DestinationEntityDebugController::createEntity'
     _title: 'Create entity from a file input, unit test'
