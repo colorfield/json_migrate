@@ -17,6 +17,9 @@ A basic workaround is to redirect the output by hand :
 touch article.txt
 drush ne-export --type=article --format=json > article.txt
 ```
+
+For Drupal 6, I had luck with the Views Datasource module that produces JSON output, the last release available is the [6.x-1.0-beta2](https://www.drupal.org/project/views_datasource/releases/6.x-1.0-beta2)
+
 ### Terms by Vocabularies
 
 For Drupal 7, the contrib module Views Datasource (https://www.drupal.org/project/views_datasource) provides a sub module Views JSON.
